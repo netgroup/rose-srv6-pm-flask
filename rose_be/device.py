@@ -16,10 +16,8 @@ from flask import (
     Blueprint, flash, g, redirect, request, session, url_for, jsonify, abort, make_response
 )
 from rose_be.error_handler import Unauthorized, BadRequest, ServerError, ResourceNotFound
-
-import rose_be.utils as EWUtil
+from rose_be import ArangoDB
 import json
-from bson import json_util
 from flask_cors import CORS
 
 bp = Blueprint('devices', __name__, url_prefix='/devices')
@@ -29,7 +27,11 @@ bp = Blueprint('devices', __name__, url_prefix='/devices')
 def list_devices():
     try:
 
-        return jsonify({})
+        # Execute an AQL query and iterate through the result cursor.
+        cursor = ArangoDB.connection.aql.execute('FOR doc IN nodes RETURN doc')
+        devices = [document for document in cursor]
+
+        return jsonify(devices)
     except KeyError as e:
         abort(400, description=e)
     except BadRequest as e:

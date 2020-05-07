@@ -15,8 +15,10 @@
 import os
 from flask import Flask, jsonify
 from flask_cors import CORS
-from flask_pymongo import PyMongo
+from flask_python_arango import FlaskArango
 from .error_handler import init_errorhandler
+
+ArangoDB = FlaskArango()
 
 
 def create_app(test_config=None):
@@ -33,7 +35,11 @@ def create_app(test_config=None):
     )
     CORS(app, resources={r"/.*": {"origins": "*"}})
     app.config['CORS_HEADERS'] = 'Content-Type'
-    # app.config["MONGO_URI"] = "mongodb://"
+    app.config['ARANGODB_HOST'] = 'http://localhost:8529'
+    app.config['ARANGODB_DB'] = 'test'
+    app.config['ARANGODB_USERNAME'] = 'root'
+    app.config['ARANGODB_PSW'] = '12345678'
+
     if test_config is None:
         # load the instance config, if it exists, when not testing
         app.config.from_pyfile('config.py', silent=True)
@@ -41,7 +47,8 @@ def create_app(test_config=None):
         # load the test config if passed in
         app.config.from_mapping(test_config)
     init_errorhandler(app)
-
+    ArangoDB.init_app(app)
+   
     # ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)

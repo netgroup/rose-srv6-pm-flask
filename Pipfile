@@ -13,7 +13,9 @@ flask = "*"
 flask-pymongo = "*"
 flask-cors = "*"
 uwsgi = "*"
-python-keystoneclient = "*"
+bson = "*"
+python-arango = "*"
+flask-python-arango = "*"
 
 [requires]
 python_version = "3.6"
