@@ -19,7 +19,7 @@ from rose_be.error_handler import Unauthorized, BadRequest, ServerError, Resourc
 from rose_be import ArangoDB
 import json
 from flask_cors import CORS
-
+from arango.exceptions import AQLQueryExecuteError
 bp = Blueprint('devices', __name__, url_prefix='/api/devices')
 
 
@@ -40,3 +40,5 @@ def list_devices():
         abort(401, description=e.description)
     except ServerError as e:
         abort(500, description=e.description)
+    except AQLQueryExecuteError as e:
+        return jsonify([])
