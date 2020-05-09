@@ -23,7 +23,7 @@ import json
 from flask_cors import CORS
 
 
-bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
+bp = Blueprint('dashboard', __name__, url_prefix='/api/dashboard')
 
 
 @bp.route('/', methods=(['GET']))
