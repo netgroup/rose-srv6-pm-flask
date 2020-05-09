@@ -35,7 +35,7 @@ def create_app(test_config=None):
     )
     CORS(app, resources={r"/.*": {"origins": "*"}})
     app.config['CORS_HEADERS'] = 'Content-Type'
-    app.config['ARANGODB_HOST'] = 'http://localhost:8529'
+    app.config['ARANGODB_HOST'] = 'http://arangodb:8529'
     app.config['ARANGODB_DB'] = 'srv6_pm'
     app.config['ARANGODB_USERNAME'] = 'root'
     app.config['ARANGODB_PSW'] = '12345678'
@@ -48,7 +48,7 @@ def create_app(test_config=None):
         app.config.from_mapping(test_config)
     init_errorhandler(app)
     ArangoDB.init_app(app)
-   
+
     # ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
