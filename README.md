@@ -17,3 +17,4 @@ Projects->New project->Import project
 (provide the .tar.gz)
 ```
 
+docker build -t rose-expman:beta . --no-cache

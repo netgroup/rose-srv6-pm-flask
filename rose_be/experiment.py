@@ -20,7 +20,7 @@ from rose_be.error_handler import Unauthorized, BadRequest, ServerError, Resourc
 import json
 from flask_cors import CORS
 
-bp = Blueprint('experiments', __name__, url_prefix='/experiments')
+bp = Blueprint('experiments', __name__, url_prefix='/api/experiments')
 
 
 @bp.route('/', methods=(['GET']))

@@ -20,23 +20,43 @@ from rose_be import ArangoDB
 import json
 from flask_cors import CORS
 
-bp = Blueprint('devices', __name__, url_prefix='/api/devices')
+bp = Blueprint('graphs', __name__, url_prefix='/api/graphs')
 
 
 @bp.route('/', methods=(['GET']))
-def list_devices():
+def list_graphs():
     try:
-
-        # Execute an AQL query and iterate through the result cursor.
-        cursor = ArangoDB.connection.aql.execute('FOR doc IN nodes RETURN doc')
-        devices = [document for document in cursor]
-
-        return jsonify(devices)
+        list_graphs = ArangoDB.connection.graphs()
+        return jsonify(list_graphs)
     except KeyError as e:
         abort(400, description=e)
     except BadRequest as e:
         abort(400, description=e.description)
     except Unauthorized as e:
         abort(401, description=e.description)
+    except ServerError as e:
+        abort(500, description=e.description)
+
+
+@bp.route('/<graph_id>', methods=(['GET']))
+def get_graph(graph_id):
+    try:
+        if ArangoDB.connection.has_graph(graph_id):
+            graph = ArangoDB.connection.graph(graph_id)
+        else:
+            raise ResourceNotFound
+
+        graph.vertex_collections()
+        graph.edge_definitions()
+
+        return jsonify(graph.vertex_collections())
+    except KeyError as e:
+        abort(400, description=e)
+    except BadRequest as e:
+        abort(400, description=e.description)
+    except Unauthorized as e:
+        abort(401, description=e.description)
+    except ResourceNotFound as e:
+        abort(404, description=e.description)
     except ServerError as e:
         abort(500, description=e.description)

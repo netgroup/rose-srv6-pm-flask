@@ -24,7 +24,7 @@ ArangoDB = FlaskArango()
 def create_app(test_config=None):
     # from . import auth
     from . import device
-
+    from . import graph
     from . import dashboard
 
     # create and configure the app
@@ -36,7 +36,7 @@ def create_app(test_config=None):
     CORS(app, resources={r"/.*": {"origins": "*"}})
     app.config['CORS_HEADERS'] = 'Content-Type'
     app.config['ARANGODB_HOST'] = 'http://localhost:8529'
-    app.config['ARANGODB_DB'] = 'test'
+    app.config['ARANGODB_DB'] = 'srv6_pm'
     app.config['ARANGODB_USERNAME'] = 'root'
     app.config['ARANGODB_PSW'] = '12345678'
 
@@ -58,6 +58,7 @@ def create_app(test_config=None):
     app.register_blueprint(dashboard.bp)
     # app.register_blueprint(auth.bp)
     app.register_blueprint(device.bp)
+    app.register_blueprint(graph.bp)
     # app.register_blueprint(operator.bp)
 
     return app
