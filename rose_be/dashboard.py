@@ -19,8 +19,10 @@ from flask import (
 
 from rose_be.error_handler import Unauthorized, BadRequest, ServerError, ResourceNotFound
 
+from rose_be import ArangoDB
 import json
 from flask_cors import CORS
+from arango.exceptions import AQLQueryExecuteError
 
 
 bp = Blueprint('dashboard', __name__, url_prefix='/api/dashboard')
@@ -29,10 +31,14 @@ bp = Blueprint('dashboard', __name__, url_prefix='/api/dashboard')
 @bp.route('/', methods=(['GET']))
 def dashboard():
     try:
-
         result = {
             'devices': {'total': 0}
         }
+        aql_query = "FOR u IN nodes COLLECT type = u.type WITH COUNT INTO length RETURN { \"type\": type, \"count\": length}"
+        cursor = ArangoDB.connection.aql.execute(aql_query)
+        for c in cursor:
+            result['devices'][c['type']] = c['count']
+            result['devices']['total'] += int(c['count'])
 
         return jsonify(result)
     except KeyError as e:
