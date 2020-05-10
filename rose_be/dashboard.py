@@ -49,3 +49,5 @@ def dashboard():
         abort(401, description=e.description)
     except ServerError as e:
         abort(500, description=e.description)
+    except AQLQueryExecuteError as e:
+        return jsonify({})
