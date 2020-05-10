@@ -17,6 +17,7 @@ from flask import (
 )
 from rose_be.error_handler import Unauthorized, BadRequest, ServerError, ResourceNotFound
 from rose_be import ArangoDB
+from arango.exceptions import AQLQueryExecuteError
 import json
 from flask_cors import CORS
 
@@ -41,15 +42,22 @@ def list_graphs():
 @bp.route('/<graph_id>', methods=(['GET']))
 def get_graph(graph_id):
     try:
-        if ArangoDB.connection.has_graph(graph_id):
-            graph = ArangoDB.connection.graph(graph_id)
-        else:
-            raise ResourceNotFound
-
-        graph.vertex_collections()
-        graph.edge_definitions()
-
-        return jsonify(graph.vertex_collections())
+        nodes = []
+        links = []
+        cursor = ArangoDB.connection.aql.execute('FOR doc IN nodes RETURN doc')
+        for document in cursor:
+            document['id'] = document.pop('_id')
+            nodes.append(document)
+        cursor = ArangoDB.connection.aql.execute('FOR doc IN edges RETURN doc')
+        for document in cursor:
+            document['source'] = document.pop('_from')
+            document['target'] = document.pop('_to')
+            links.append(document)
+        result = {
+            'nodes': nodes,
+            'links': links
+        }
+        return jsonify(result)
     except KeyError as e:
         abort(400, description=e)
     except BadRequest as e:
@@ -60,3 +68,5 @@ def get_graph(graph_id):
         abort(404, description=e.description)
     except ServerError as e:
         abort(500, description=e.description)
+    except AQLQueryExecuteError as e:
+        return jsonify({})
