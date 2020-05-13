@@ -1,4 +1,6 @@
-# Your project name (code repository)
+![Docker Image CI](https://github.com/netgroup/srv6-pm-flask/workflows/Docker%20Image%20CI/badge.svg)
+
+# rose-srv6-pm-flask
 
 
 <!--- example of figure
