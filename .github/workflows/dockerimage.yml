@@ -22,7 +22,7 @@ jobs:
           tags: latest,beta
           tag_with_ref: true
           tag_with_sha: true
-          push: true
+          push: false
 
       - name: Build and Publish Docker Controller image
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master'}}
