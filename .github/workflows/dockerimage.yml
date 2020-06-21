@@ -20,7 +20,6 @@ jobs:
           gh_token: ${{ secrets.TOKEN_GITHUB }}
           image_name: rose-expman
           tags: latest,beta
-          tag_with_ref: true
           tag_with_sha: true
           push: false
 
@@ -31,6 +30,5 @@ jobs:
           gh_token: ${{ secrets.TOKEN_GITHUB }}
           image_name: rose-expman
           tags: latest,beta
-          tag_with_ref: true
           tag_with_sha: true
           push: true
