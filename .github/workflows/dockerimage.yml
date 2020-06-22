@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v2
         name: Check out code
       
-      - name: Build Docker Controller image
+      - name: Build Docker image
         if: ${{ github.event_name == 'pull_request'}}
         uses: zvfvrv/docker-bpgpr@v1.0.1
         with:
@@ -23,7 +23,7 @@ jobs:
           tag_with_sha: true
           push: false
 
-      - name: Build and Publish Docker Controller image
+      - name: Build and Publish Docker image
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master'}}
         uses: zvfvrv/docker-bpgpr@v1.0.1
         with:
@@ -32,3 +32,14 @@ jobs:
           tags: latest,beta
           tag_with_sha: true
           push: true
+    
+      - name: Build and Publish Docker image DockerHub 
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master'}}
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          # temporary push on a test dockerhub repo
+          repository: rosesrv6/rose-expman
+          tag_with_ref: true
+          tags: latest,beta
